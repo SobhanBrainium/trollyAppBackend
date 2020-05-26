@@ -1,5 +1,7 @@
 import express from "express";
-// import routes from "./src/routes/calenderRoute"; 
+import commonRoutes from "./routes/common";
+import customerRoutes from "./routes/customers";
+// import adminRoutes from "./routes/admin";
 import mongoose from "mongoose";
 import path from "path";
 import bodyParser from "body-parser";
@@ -43,6 +45,13 @@ app.use(bodyParser.json({limit: '50mb'}));
 app.use(express.static(path.join(__dirname, "public")));
 
 // routes(app);
+
+//#region Load router
+//==== Load Router =====//
+app.use('/api', commonRoutes);
+// app.use('/api/admin', adminRoutes);
+app.use('/api/customer',customerRoutes);
+//#endregion
 
 //====Port open to run application
 app.listen(config.port, (err) => {
