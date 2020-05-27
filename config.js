@@ -1,12 +1,12 @@
 module.exports = {
     "port": 2000,
     "secretKey": "hyrgqwjdfbw4534efqrwer2q38945765",
-    production: {
-        username: 'BeaiwareHealth',
-        password: 'AppLive2020',
-        host: 'localhost',
+    productionDB: {
+        username: 'brain1uMMong0User',
+        password: 'PL5qnU9nuvX0pBa',
+        host: '68.183.173.21',
         port: '27017',
-        dbName: 'BEIWARE',
+        dbName: 'trolly',
         authDb: 'admin'
     },
     

@@ -1,4 +1,5 @@
 import express from "express";
+import http from "http"
 import commonRoutes from "./routes/common";
 import customerRoutes from "./routes/customers";
 // import adminRoutes from "./routes/admin";
@@ -10,10 +11,18 @@ import config from "./config"
 
 const app = express();
 
+//#region server create
+let server = http.createServer(app);
+//#endregion
+
 //#region mongoose connection
+const productionDBString = `mongodb://${config.productionDB.username}:${config.productionDB.password}@${config.productionDB.host}:${config.productionDB.port}/${config.productionDB.dbName}?authSource=${config.productionDB.authDb}`
+
+console.log(productionDBString,'productionDBString')
+
 mongoose.Promise = global.Promise;
 mongoose
-  .connect(config.local.database, { useNewUrlParser: true })
+  .connect(productionDBString, { useNewUrlParser: true })
   .then(() => console.log("Database connected successfully"))
   .catch(err => console.log(err));
 
@@ -44,8 +53,6 @@ app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
 app.use(bodyParser.json({limit: '50mb'}));
 app.use(express.static(path.join(__dirname, "public")));
 
-// routes(app);
-
 //#region Load router
 //==== Load Router =====//
 app.use('/api', commonRoutes);
@@ -54,10 +61,10 @@ app.use('/api/customer',customerRoutes);
 //#endregion
 
 //====Port open to run application
-app.listen(config.port, (err) => {
+server.listen(config.port, (err) => {
   if (err) {
       throw err;
   } else {
-      console.log(`Trolly server is running and listening to http://localhost:${config.port} `);
+      console.log(`Trolley server is running and listening to http://localhost:${config.port} `);
   }
 });
