@@ -1,5 +1,7 @@
 import express from "express";
+import fs from "fs"
 import http from "http"
+import https from "https"
 import commonRoutes from "./routes/common";
 import customerRoutes from "./routes/customers";
 // import adminRoutes from "./routes/admin";
@@ -11,8 +13,17 @@ import config from "./config"
 
 const app = express();
 
-//#region server create
-let server = http.createServer(app);
+//#region server create localhost
+let server = http.createServer(app); 
+//#endregion
+
+//#region  create server for production with https
+// let credentials = {
+//     key: fs.readFileSync('/etc/letsencrypt/live/nodeserver.brainiuminfotech.com/privkey.pem', 'utf8'),
+//     cert: fs.readFileSync('/etc/letsencrypt/live/nodeserver.brainiuminfotech.com/fullchain.pem', 'utf8')
+// };
+
+// let server = https.createServer(credentials, app);
 //#endregion
 
 //#region mongoose connection

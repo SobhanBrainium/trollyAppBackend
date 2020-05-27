@@ -9,6 +9,11 @@ module.exports = {
         dbName: 'trolly',
         authDb: 'admin'
     },
+
+    emailConfig: {
+        MAIL_USERNAME: "trolleeyaustralia@gmail.com",
+        MAIL_PASS: "Brainium2020)("
+    },
     
     local: {
         database: "mongodb://localhost:27017/trolly",
