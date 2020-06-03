@@ -1,8 +1,8 @@
-var jwt = require('jsonwebtoken');
-const config = require('../config');
+import jwt from "jsonwebtoken"
+import config from "../config"
 /**
- * @developer : Subhajit Singha
- * @date : 20th February 2020
+ * @developer : Sobhan Das
+ * @date : 27th May 2020
  * @description : Middleware function for validating request data and JWT token.
  */
 exports.validateToken = async (req, res, next) => {

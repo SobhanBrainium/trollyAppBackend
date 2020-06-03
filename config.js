@@ -1,5 +1,9 @@
+import os from "os"
+var hostName = os.hostname();
+
 module.exports = {
     "port": 2000,
+    serverhost: hostName == 'nodeserver.brainiuminfotech.com' ? 'https://nodeserver.brainiuminfotech.com' : 'http://localhost',
     "secretKey": "hyrgqwjdfbw4534efqrwer2q38945765",
     productionDB: {
         username: 'brain1uMMong0User',
@@ -11,8 +15,8 @@ module.exports = {
     },
 
     emailConfig: {
-        MAIL_USERNAME: "trolleeyaustralia@gmail.com",
-        MAIL_PASS: "Brainium2020)("
+        MAIL_USERNAME: "sobhan.brainium@gmail.com",
+        MAIL_PASS: "c29iaGFuQDEyMw=="
     },
     
     local: {
@@ -44,6 +48,6 @@ module.exports = {
     __site_url: '',
     limit: 10,
     adminEmailAddress:'ipsita12.amstech@gmail.com',
-    beaconTimeDiff: '600000'
-
+    beaconTimeDiff: '600000',
+    restaurantSearchDistance: 10000,
 }

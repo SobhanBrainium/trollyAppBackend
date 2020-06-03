@@ -1,14 +1,14 @@
 var mongoose = require('mongoose');
 var bcrypt = require('bcryptjs');
 
-var customerSchema = new mongoose.Schema({
+var deliveryboySchema = new mongoose.Schema({
     firstName: { type: String, required: true },
     lastName: { type: String, required: true },
-    email: { type: String, required: true, unique: true },
-    phone: { type: Number, required: true },
+    email: { type: String, unique: true },
+    phone: { type: Number, unique: true  },
     countryCode: { type: String, required: true },
-    password: { type: String, default : null },
-    cityId: { type: mongoose.Schema.Types.ObjectId, required : true },
+    password: { type: String, required: true },
+    cityId: { type: mongoose.Schema.Types.ObjectId },
     location: { type: String, default: '' },
     profileImage: { type: String, default: '' },
     promoCode: { type: String, default: '' },
@@ -18,14 +18,15 @@ var customerSchema = new mongoose.Schema({
     verifyOtp: { type: String, enum: ['0', '1'], default: '0'},
     appType: { type: String, enum: ['IOS', 'ANDROID', 'BROWSER']},
     deviceToken: { type: String, default: '' },
-    loginType: { type: String, default: 'GENERAL'},
-    socialId : {type: String, default: ''},
-    pushMode : {type: String, default: ''},
+    loginType: { type: String, enum: ['NORMAL', 'FACEBOOK', 'GOOGLE']},
+    numberPlate: { type: String, default: '',required: true, unique: true },
+    driverLicense: { type: String, default: '',required: true, unique: true },
+    vehicle: { type: String, default: '',required: true },
 }, {
     timestamps: true
 });
 
-customerSchema.pre('save', function(next) {
+deliveryboySchema.pre('save', function(next) {
     let customer = this;
     if (!customer.isModified('password')) {
         return next();
@@ -43,4 +44,4 @@ customerSchema.pre('save', function(next) {
     })
 });
 
-module.exports = mongoose.model('Customer', customerSchema);
+module.exports = mongoose.model('DeliveryBoy', deliveryboySchema);

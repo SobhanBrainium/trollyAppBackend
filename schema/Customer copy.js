@@ -4,11 +4,12 @@ var bcrypt = require('bcryptjs');
 var customerSchema = new mongoose.Schema({
     firstName: { type: String, required: true },
     lastName: { type: String, required: true },
-    email: { type: String, required: true, unique: true },
-    phone: { type: Number, required: true },
+    email: { type: String},
+    phone: { type: Number},
+    socialId: { type: String},
     countryCode: { type: String, required: true },
-    password: { type: String, default : null },
-    cityId: { type: mongoose.Schema.Types.ObjectId, required : true },
+    password: { type: String },
+    cityId: { type: mongoose.Schema.Types.ObjectId },
     location: { type: String, default: '' },
     profileImage: { type: String, default: '' },
     promoCode: { type: String, default: '' },
@@ -19,8 +20,7 @@ var customerSchema = new mongoose.Schema({
     appType: { type: String, enum: ['IOS', 'ANDROID', 'BROWSER']},
     deviceToken: { type: String, default: '' },
     loginType: { type: String, default: 'GENERAL'},
-    socialId : {type: String, default: ''},
-    pushMode : {type: String, default: ''},
+    userType: { type: String, default: 'customer'}
 }, {
     timestamps: true
 });

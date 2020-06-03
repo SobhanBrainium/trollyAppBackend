@@ -1,4 +1,6 @@
 import express from "express";
+import fileUpload from "express-fileupload"
+import os from "os"
 import fs from "fs"
 import http from "http"
 import https from "https"
@@ -13,17 +15,21 @@ import config from "./config"
 
 const app = express();
 
-//#region server create localhost
-let server = http.createServer(app); 
-//#endregion
+var hostName = os.hostname();
 
-//#region  create server for production with https
-// let credentials = {
-//     key: fs.readFileSync('/etc/letsencrypt/live/nodeserver.brainiuminfotech.com/privkey.pem', 'utf8'),
-//     cert: fs.readFileSync('/etc/letsencrypt/live/nodeserver.brainiuminfotech.com/fullchain.pem', 'utf8')
-// };
+let server;
 
-// let server = https.createServer(credentials, app);
+//#region create server for localhost and production
+if(hostName == 'nodeserver.brainiuminfotech.com'){
+  let credentials = {
+      key: fs.readFileSync('/etc/letsencrypt/live/nodeserver.brainiuminfotech.com/privkey.pem', 'utf8'),
+      cert: fs.readFileSync('/etc/letsencrypt/live/nodeserver.brainiuminfotech.com/fullchain.pem', 'utf8')
+  };
+
+  server = https.createServer(credentials, app);
+}else{
+  server = http.createServer(app);
+}
 //#endregion
 
 //#region mongoose connection
@@ -60,8 +66,11 @@ app.use(allowCrossDomain);
 //#endregion
 
 app.use(cookieParser());
+
 app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
 app.use(bodyParser.json({limit: '50mb'}));
+app.use(fileUpload());
+
 app.use(express.static(path.join(__dirname, "public")));
 
 //#region Load router

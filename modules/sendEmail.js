@@ -25,19 +25,15 @@ module.exports = function(emailType) {
         }
     };
 
-
-    var transporter = nodeMailer.createTransport(nodeMailerSmtpTransport({
+    let transporter = nodeMailer.createTransport(nodeMailerSmtpTransport({
         host: 'smtp.gmail.com',
-        port    : 465,
-        secure  : true,
-        debug   : true,
-        auth    : {
-            user    : emailFrom,
-            pass    : emailPass,
-            // pass    : new Buffer(emailPass,'base64').toString('ascii'),
-        },    
-        maxMessages : 100,
-        requireTLS : true,
+        port: 465,
+        secure: true,
+        requireTLS: true,
+        auth: {
+            user: emailFrom,
+            pass: new Buffer(emailPass,'base64').toString('ascii')
+        }
     }));
 
 
@@ -45,7 +41,7 @@ module.exports = function(emailType) {
         var self = {
             send: () => {
                 var mailOption = {
-                    from: emailFrom,
+                    from: `'"Trolley" <${emailFrom}>'`,
                     to: to,
                     subject: mailDict[emailType].subject,
                     // text: `Hello ${data.name}, please verify your studiolive account. Your verification code is ${data.otp}`
@@ -59,6 +55,9 @@ module.exports = function(emailType) {
                     case 'forgotPasswordMail': 
                         mailOption.text = `Hello ${data.firstName}, use ${data.forgotPasswordOtp} code to reset your password.`
                         break;
+                    case 'sendOTPdMail' : 
+                        mailOption.text = `Hello ${data.firstName}, your OTP is ${data.otp}. Please verify it.`
+                        break;
                     case 'resendOtpMail':
                         mailOption.text = `Hello ${data.firstName}, use ${data.otp} code to verify your account.`
                         break;
@@ -70,6 +69,7 @@ module.exports = function(emailType) {
                         console.log(error);
                     } else {
                         console.log('Email Sent', info.response);
+                        return info.response
                     }
                 });
             }
