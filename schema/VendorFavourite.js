@@ -1,11 +1,11 @@
 var mongoose = require('mongoose');
 
 var vendorFavouriteSchema = new mongoose.Schema({
-    vendorId: { type: mongoose.Schema.Types.ObjectId, required: true },
-    customerId: { type: mongoose.Schema.Types.ObjectId, required: true },
+    itemId: { type: mongoose.Schema.Types.ObjectId, required: true, ref : "Item" },
+    customerId: { type: mongoose.Schema.Types.ObjectId, required: true, ref : "Customer" },
 }, {
     timestamps: true
 });
 
 
-module.exports = mongoose.model('vendorFavourite', vendorFavouriteSchema);
+module.exports = mongoose.model('GroceryFavoriteItem', vendorFavouriteSchema);

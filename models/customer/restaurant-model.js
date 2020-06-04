@@ -48,55 +48,78 @@ module.exports = {
                             response_data: {}
                         });
                     } else {
-                        // console.log(results);
                         if (results.length > 0) {
                             var vendorIds = [];
                             let productList = []
                             //#region product fetch vendor/warehouse wise
-                            _.forEach(results, async (value, key) => {
-                                const vendorId = value._id
-                                const fetchItem = await itemSchema.find({vendorId : vendorId})
+                            for(let warehouseItem of results){
+                                const vendorId = warehouseItem._id
+                                const fetchItem = await itemSchema.find({vendorId : vendorId},{
+                                    _id : 1, itemName : 1, categoryId : 1, vendorId : 1, price : 1, unit : 1, offerId : 1, isActive : 1
+                                })
                                 .populate('categoryId', {_id : 1, categoryName : 1})
                                 .populate('vendorId', {_id : 1, restaurantName : 1})
+
                                 if(fetchItem.length > 0){
-                                    _.forEach(fetchItem, async (itemValue, itemKey) => {
-                                        productList.push(itemValue)
-                                    })
+                                    for(let item of fetchItem){
+                                        //#region check item is favorite or not by customer
+                                        const itemId = item._id
+                                        const customerId = data.body.customerId;
+                                        let productFinalList = {}
+
+                                        const isFavorite = await vendorFavouriteSchema.findOne({ itemId: itemId, customerId: customerId });
+
+                                        if(isFavorite != null){
+                                            productFinalList = {
+                                                ...item.toObject(),
+                                                favorite : 1
+                                            }
+                                        }else{
+                                            productFinalList = {
+                                                ...item.toObject(),
+                                                favorite : 0
+                                            }
+                                        }
+                                        //#endregion
+                                        productList.push(productFinalList)
+                                    }
                                 }
-                            })
+                            }
                             //#endregion
 
-                            for (let restaurant of results) {
-                                var responseObj = {};
-                                responseObj = {
-                                    id: restaurant._id,
-                                    name: restaurant.restaurantName,
-                                    description: restaurant.description,
-                                    logo: `${config.serverhost}:${config.port}/img/vendor/${restaurant.logo}`,
-                                    rating: restaurant.rating
-                                };
-                                // console.log(restaurant.location.coordinates);
+                            //#region vendor
+                            // for (let restaurant of results) {
+                            //     var responseObj = {};
+                            //     responseObj = {
+                            //         id: restaurant._id,
+                            //         name: restaurant.restaurantName,
+                            //         description: restaurant.description,
+                            //         logo: `${config.serverhost}:${config.port}/img/vendor/${restaurant.logo}`,
+                            //         rating: restaurant.rating
+                            //     };
+                            //     // console.log(restaurant.location.coordinates);
 
-                                //Calculate Distance
-                                var sourceLat = restaurant.location.coordinates[1];
-                                var sourceLong = restaurant.location.coordinates[0];
+                            //     //Calculate Distance
+                            //     var sourceLat = restaurant.location.coordinates[1];
+                            //     var sourceLong = restaurant.location.coordinates[0];
 
-                                var destLat = latt;
-                                var destLong = long;
-                                responseObj.distance = await getDistanceinMtr(sourceLat, sourceLong, destLat, destLong);
-                                // console.log(responseObj);
+                            //     var destLat = latt;
+                            //     var destLong = long;
+                            //     responseObj.distance = await getDistanceinMtr(sourceLat, sourceLong, destLat, destLong);
+                            //     // console.log(responseObj);
 
-                                //Get Favorites (Only for Genuine Customers, No Guest)
-                                if (userType == 'GUEST') {
-                                    responseObj.favorite = 0;
-                                } else {
-                                    var customerId = data.body.customerId;
-                                    var vendorId = restaurant._id;
-                                    responseObj.favorite = await vendorFavouriteSchema.countDocuments({ vendorId: vendorId, customerId: customerId });
-                                }
-                                responseDt.push(responseObj);
-                                vendorIds.push(restaurant._id);
-                            }
+                            //     //Get Favorites (Only for Genuine Customers, No Guest)
+                            //     if (userType == 'GUEST') {
+                            //         responseObj.favorite = 0;
+                            //     } else {
+                            //         var customerId = data.body.customerId;
+                            //         var vendorId = restaurant._id;
+                            //         responseObj.favorite = await vendorFavouriteSchema.countDocuments({ vendorId: vendorId, customerId: customerId });
+                            //     }
+                            //     responseDt.push(responseObj);
+                            //     vendorIds.push(restaurant._id);
+                            // }
+                            //#endregion
 
                             //Restaurant
                             response_data.productList = productList
@@ -116,7 +139,7 @@ module.exports = {
                             callBack({
                                 success: true,
                                 STATUSCODE: 200,
-                                message: `${results.length} nearby restaurants found.`,
+                                message: `${results.length} nearby warehouse found.`,
                                 response_data: response_data
                             })
 

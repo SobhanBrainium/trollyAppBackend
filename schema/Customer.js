@@ -4,7 +4,7 @@ var bcrypt = require('bcryptjs');
 var customerSchema = new mongoose.Schema({
     firstName: { type: String, required: true },
     lastName: { type: String, required: true },
-    email: { type: String, required: true, unique: true },
+    email: { type: String, required: true },
     phone: { type: Number, required: true },
     countryCode: { type: String, required: true },
     password: { type: String, default : null },
