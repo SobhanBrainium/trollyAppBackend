@@ -123,5 +123,12 @@ customerApi.post('/promoCodeList',jwtTokenValidator.validateToken,restaurantVali
     });
 });
 
+/** Logout */
+customerApi.post('/logout',jwtTokenValidator.validateToken, customerValidator.logout, function(req, res) {
+    registerService.logout(req.body, function(result) {
+        res.status(200).send(result);
+    });
+})
+
 
 module.exports = customerApi;

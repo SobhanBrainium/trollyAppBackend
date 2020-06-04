@@ -11,6 +11,8 @@ var OrderDetailSchema = require('../../schema/OrderDetail');
 var config = require('../../config');
 var PushLib = require('../../libraries/pushlib/send-push');
 
+import _ from "lodash"
+
 module.exports = {
     //Customer Home/Dashboard API
     customerHome: (data, callBack) => {
@@ -49,6 +51,21 @@ module.exports = {
                         // console.log(results);
                         if (results.length > 0) {
                             var vendorIds = [];
+                            let productList = []
+                            //#region product fetch vendor/warehouse wise
+                            _.forEach(results, async (value, key) => {
+                                const vendorId = value._id
+                                const fetchItem = await itemSchema.find({vendorId : vendorId})
+                                .populate('categoryId', {_id : 1, categoryName : 1})
+                                .populate('vendorId', {_id : 1, restaurantName : 1})
+                                if(fetchItem.length > 0){
+                                    _.forEach(fetchItem, async (itemValue, itemKey) => {
+                                        productList.push(itemValue)
+                                    })
+                                }
+                            })
+                            //#endregion
+
                             for (let restaurant of results) {
                                 var responseObj = {};
                                 responseObj = {
@@ -82,7 +99,9 @@ module.exports = {
                             }
 
                             //Restaurant
-                            response_data.vendor = responseDt;
+                            response_data.productList = productList
+
+                            // response_data.vendor = responseDt;
                             //Category Data
                             response_data.category_data = await categorySchema.find({}, { "categoryName": 1, "image": 1 })
                             response_data.category_imageUrl = `${config.serverhost}:${config.port}/img/category/`;

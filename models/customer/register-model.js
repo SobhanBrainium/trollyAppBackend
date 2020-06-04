@@ -909,6 +909,24 @@ module.exports = {
             // })
         }
     },
+
+    logout: (data, callBack) => {
+        if (data) {
+            var loginId = data.loginId;
+            userDeviceLoginSchema.deleteOne({ _id: loginId }, function (err) {
+                if (err) {
+                    console.log(err);
+                }
+                // deleted at most one tank document
+            });
+            callBack({
+                success: true,
+                STATUSCODE: 200,
+                message: 'User logged out Successfully',
+                response_data: {}
+            })
+        }
+    },
 }
 
 function generateToken(userData) {
