@@ -33,7 +33,7 @@
     "geolib": "^3.3.1",
     "gravatar": "^1.8.0",
     "image-downloader": "^4.0.1",
-    "jsonwebtoken": "^8.5.1",
+    "jsonwebtoken": "^9.0.0",
     "lodash": "^4.17.14",
     "moment": "^2.24.0",
     "mongoose": "^5.6.4",
